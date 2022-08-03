@@ -2,6 +2,9 @@ import random
 import math
 from operator import itemgetter
 
+def test():
+    return UserBasedCF().run()
+
 class UserBasedCF():
     # 初始化相关参数
     def __init__(self):
