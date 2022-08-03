@@ -1,5 +1,4 @@
-import UserCF
-from UserCF.UserCF import UserBasedCF
+from UserCF import UserBasedCF
 
 
 def run():
