@@ -112,16 +112,20 @@ class UserBasedCF():
         all_rec_movies = set()
 
         res = ""
+        res_dict = {}
 
         for i, user, in enumerate(self.trainSet):
             test_movies = self.testSet.get(user, {})
             rec_movies = self.recommend(user)
             res += user
             res += "的推荐是"
+            rec_seq = []
             for movie in rec_movies:
                 res += movie[0]
+                rec_seq.append(movie[0])
                 res += " "
             res += "\n"
+            res_dict[user] = rec_seq
             for movie, w in rec_movies:
                 if movie in test_movies:
                     hit += 1
@@ -129,12 +133,13 @@ class UserBasedCF():
             rec_count += N
             test_count += len(test_movies)
 
+
         precision = hit / (1.0 * rec_count)
         recall = hit / (1.0 * test_count)
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         print('precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage))
         res += 'precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
-        return res
+        return res_dict
 
     def run(self):
         rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
