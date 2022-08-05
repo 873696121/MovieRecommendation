@@ -24,7 +24,7 @@ class UserBasedCF():
         print('Recommneded movie number = %d' % self.n_rec_movie)
 
     # 读文件得到“用户-电影”数据
-    def get_dataset(self, filename, pivot=1):
+    def get_dataset(self, filename, pivot=0.99):
         trainSet_len = 0
         testSet_len = 0
         for line in self.load_file(filename):
@@ -138,13 +138,16 @@ class UserBasedCF():
             res += user
             res += "的推荐是"
             rec_item_seq = []
+            rec_user_seq = []
+            for u in rec_users:
+                rec_user_seq.append(u[0])
             for movie in rec_movies:
                 res += movie[0]
                 rec_item_seq.append(movie[0])
                 res += " "
             res += "\n"
             res_item_dict[user] = rec_item_seq
-            res_user_dict[user] = rec_users
+            res_user_dict[user] = rec_user_seq
             for movie, w in rec_movies:
                 if movie in test_movies:
                     hit += 1
@@ -158,7 +161,7 @@ class UserBasedCF():
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         print('precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage))
         res += 'precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
-        return {res_item_dict, res_user_dict}
+        return [res_item_dict, res_user_dict]
 
     def run(self):
         rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
