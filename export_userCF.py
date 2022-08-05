@@ -24,7 +24,7 @@ class UserBasedCF():
         print('Recommneded movie number = %d' % self.n_rec_movie)
 
     # 读文件得到“用户-电影”数据
-    def get_dataset(self, filename, pivot=0.75):
+    def get_dataset(self, filename, pivot=1):
         trainSet_len = 0
         testSet_len = 0
         for line in self.load_file(filename):
@@ -100,6 +100,22 @@ class UserBasedCF():
                 rank[movie] += wuv
         return sorted(rank.items(), key=itemgetter(1), reverse=True)[0:N]
 
+    # 针对目标用户U，找到其最相似的K个用户
+    def recommendUser(self, user):
+        K = self.n_sim_user
+        N = self.n_rec_movie
+        rank = {}
+        watched_movies = self.trainSet[user]
+
+        # v=similar user, wuv=similar factor
+        for v, wuv in sorted(self.user_sim_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]:
+            for movie in self.trainSet[v]:
+                if movie in watched_movies:
+                    continue
+                rank.setdefault(movie, 0)
+                rank[movie] += wuv
+        return sorted(rank.items(), key=itemgetter(1), reverse=True)[0:N]
+
     # 产生推荐并通过准确率、召回率和覆盖率进行评估
     def evaluate(self):
         print("Evaluation start ...")
@@ -112,20 +128,23 @@ class UserBasedCF():
         all_rec_movies = set()
 
         res = ""
-        res_dict = {}
+        res_item_dict = {}
+        res_user_dict = {}
 
         for i, user, in enumerate(self.trainSet):
             test_movies = self.testSet.get(user, {})
             rec_movies = self.recommend(user)
+            rec_users = self.recommendUser(user)
             res += user
             res += "的推荐是"
-            rec_seq = []
+            rec_item_seq = []
             for movie in rec_movies:
                 res += movie[0]
-                rec_seq.append(movie[0])
+                rec_item_seq.append(movie[0])
                 res += " "
             res += "\n"
-            res_dict[user] = rec_seq
+            res_item_dict[user] = rec_item_seq
+            res_user_dict[user] = rec_users
             for movie, w in rec_movies:
                 if movie in test_movies:
                     hit += 1
@@ -139,7 +158,7 @@ class UserBasedCF():
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         print('precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage))
         res += 'precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
-        return res_dict
+        return {res_item_dict, res_user_dict}
 
     def run(self):
         rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
@@ -150,5 +169,5 @@ class UserBasedCF():
 
 
 if __name__ == '__main__':
-    res = UserBasedCF().run()
-    print("res = " + res)
+    res = test()
+    print(res)
