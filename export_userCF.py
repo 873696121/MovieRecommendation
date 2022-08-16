@@ -165,7 +165,8 @@ class UserBasedCF():
         return res
 
     def run(self):
-        rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
+        # rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
+        rating_file = 'U:\\project\\matrix.csv'
         userCF = UserBasedCF()
         userCF.get_dataset(rating_file)
         userCF.calc_user_sim()
