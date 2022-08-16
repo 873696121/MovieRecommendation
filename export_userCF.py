@@ -130,22 +130,22 @@ class UserBasedCF():
         res = ""
         res_item_dict = {}
         res_user_dict = {}
-        res += "train set = "
-        res += self.trainSet.keys().__str__()
-        res += "\n"
-        res += "recommend users = "
 
         for i, user, in enumerate(self.trainSet):
-            res += user + ", "
             test_movies = self.testSet.get(user, {})
             rec_movies = self.recommend(user)
             rec_users = self.recommendUser(user)
+            res += user
+            res += "的推荐是"
             rec_item_seq = []
             rec_user_seq = []
             for u in rec_users:
                 rec_user_seq.append(u[0])
             for movie in rec_movies:
+                res += movie[0]
                 rec_item_seq.append(movie[0])
+                res += " "
+            res += "\n"
             res_item_dict[user] = rec_item_seq
             res_user_dict[user] = rec_user_seq
             for movie, w in rec_movies:
@@ -160,9 +160,8 @@ class UserBasedCF():
         recall = hit / (1.0 * test_count)
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         print('precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage))
-        res += '\nprecisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
-        # return [res_item_dict, res_user_dict]
-        return res
+        res += 'precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
+        return [res_item_dict, res_user_dict]
 
     def run(self):
         rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
