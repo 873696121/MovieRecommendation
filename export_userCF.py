@@ -2,8 +2,10 @@ import random
 import math
 from operator import itemgetter
 
+
 def test():
     return UserBasedCF().run()
+
 
 class UserBasedCF():
     # 初始化相关参数
@@ -103,18 +105,7 @@ class UserBasedCF():
     # 针对目标用户U，找到其最相似的K个用户
     def recommendUser(self, user):
         K = self.n_sim_user
-        N = self.n_rec_movie
-        rank = {}
-        watched_movies = self.trainSet[user]
-
-        # v=similar user, wuv=similar factor
-        for v, wuv in sorted(self.user_sim_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]:
-            for movie in self.trainSet[v]:
-                if movie in watched_movies:
-                    continue
-                rank.setdefault(movie, 0)
-                rank[movie] += wuv
-        return sorted(rank.items(), key=itemgetter(1), reverse=True)[0:N]
+        return sorted(self.user_sim_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]
 
     # 产生推荐并通过准确率、召回率和覆盖率进行评估
     def evaluate(self):
@@ -130,22 +121,18 @@ class UserBasedCF():
         res = ""
         res_item_dict = {}
         res_user_dict = {}
-
+        cnt = 0
         for i, user, in enumerate(self.trainSet):
+            cnt += 1
             test_movies = self.testSet.get(user, {})
             rec_movies = self.recommend(user)
             rec_users = self.recommendUser(user)
-            res += user
-            res += "的推荐是"
             rec_item_seq = []
             rec_user_seq = []
             for u in rec_users:
                 rec_user_seq.append(u[0])
             for movie in rec_movies:
-                res += movie[0]
                 rec_item_seq.append(movie[0])
-                res += " "
-            res += "\n"
             res_item_dict[user] = rec_item_seq
             res_user_dict[user] = rec_user_seq
             for movie, w in rec_movies:
@@ -155,13 +142,16 @@ class UserBasedCF():
             rec_count += N
             test_count += len(test_movies)
 
-
+        res += "输入user: %d" % cnt
+        res += " rec user = %d" % len(res_user_dict)
+        res += " rec item = %d" % len(res_item_dict)
         precision = hit / (1.0 * rec_count)
         recall = hit / (1.0 * test_count)
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
         print('precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage))
-        res += 'precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
-        return [res_item_dict, res_user_dict]
+        res += ' precisioin=%.4f\trecall=%.4f\tcoverage=%.4f' % (precision, recall, coverage)
+        res_extra = {res: []}
+        return [res_item_dict, res_user_dict, res_extra]
 
     def run(self):
         rating_file = '/Users/bytedance/temp/ml-latest-small/ratings.csv'
@@ -173,4 +163,6 @@ class UserBasedCF():
 
 if __name__ == '__main__':
     res = test()
-    print(res)
+    print(res[0])
+    print(res[1])
+    print(res[2])
