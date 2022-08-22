@@ -5,7 +5,6 @@ participant splunk
 participant file_system
 participant python
 
-alt training(Re run weekly)
 genesis -> splunk: Get user data
 genesis -> genesis: Deserialize to scala object
 genesis -> file_system: Output the user-item matrix to the file
@@ -16,12 +15,5 @@ python -> python: Calculate the similarity between users
 python -> python: Generate recommendations
 python -> python: Evaluate the recommended results
 python -> file_system: Output the results to a file
-end
-
-alt apply
-genesis -> file_system: load recommended results
-genesis -> genesis: Get the recommended list
-genesis -> genesis: Show recommended list
-end
 
 @enduml
