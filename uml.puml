@@ -1,0 +1,21 @@
+@startuml
+autonumber
+participant genesis
+participant splunk
+participant file_system
+participant python
+
+genesis -> splunk: Get user data
+genesis -> genesis: Deserialize to scala object
+genesis -> file_system: output the user-item matrix to the file
+genesis -> python : call python
+python -> file_system: load matrix
+alt training
+python -> python: divide data set into training set and test set
+python -> python: calculate the similarity between users
+python -> python: generate recommendations
+python -> python: evaluate the recommended results
+end
+python -> file_system: output the results to a file
+
+@enduml
