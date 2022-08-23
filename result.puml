@@ -4,7 +4,7 @@ participant user
 participant genesis
 participant file_storage
 
-user -> genesis: User log in genesis
+user -> genesis: Users login genesis
 genesis -> file_storage: Load recommended results
 genesis -> genesis: Get the recommended list
 genesis -> user: Show recommended list

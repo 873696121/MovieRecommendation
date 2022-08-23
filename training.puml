@@ -11,6 +11,7 @@ genesis -> file_storage: Output the user-item matrix to the file
 genesis -> python : Call python
 python -> file_storage: Load matrix
 python -> python: Divide data set into training set and test set
+python -> python: Create item-user inverted list
 python -> python: Calculate the similarity between users
 python -> python: Generate recommendations
 python -> python: Evaluate the recommended results
