@@ -2,10 +2,10 @@
 autonumber
 participant user
 participant genesis
-participant file_system
+participant file_storage
 
 user -> genesis: User log in genesis
-genesis -> file_system: Load recommended results
+genesis -> file_storage: Load recommended results
 genesis -> genesis: Get the recommended list
 genesis -> user: Show recommended list
 @enduml

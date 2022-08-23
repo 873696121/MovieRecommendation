@@ -2,18 +2,18 @@
 autonumber
 participant genesis
 participant splunk
-participant file_system
+participant file_storage
 participant python
 
 genesis -> splunk: Get user data
 genesis -> genesis: Deserialize to scala object
-genesis -> file_system: Output the user-item matrix to the file
+genesis -> file_storage: Output the user-item matrix to the file
 genesis -> python : Call python
-python -> file_system: Load matrix
+python -> file_storage: Load matrix
 python -> python: Divide data set into training set and test set
 python -> python: Calculate the similarity between users
 python -> python: Generate recommendations
 python -> python: Evaluate the recommended results
-python -> file_system: Output the results to a file
+python -> file_storage: Output the results to a file
 
 @enduml
