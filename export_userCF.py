@@ -30,7 +30,7 @@ class UserBasedCF():
         trainSet_len = 0
         testSet_len = 0
         for line in self.load_file(filename):
-            user, movie, rating, timestamp = line.split(',')
+            user, movie, rating = line.split(',')
             if random.random() < pivot:
                 self.trainSet.setdefault(user, {})
                 self.trainSet[user][movie] = rating
@@ -142,9 +142,6 @@ class UserBasedCF():
             rec_count += N
             test_count += len(test_movies)
 
-        res += "输入user: %d" % cnt
-        res += " rec user = %d" % len(res_user_dict)
-        res += " rec item = %d" % len(res_item_dict)
         precision = hit / (1.0 * rec_count)
         recall = hit / (1.0 * test_count)
         coverage = len(all_rec_movies) / (1.0 * self.movie_count)
