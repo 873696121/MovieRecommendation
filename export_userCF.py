@@ -30,7 +30,7 @@ class UserBasedCF():
         trainSet_len = 0
         testSet_len = 0
         for line in self.load_file(filename):
-            user, movie, rating = line.split(',')
+            user, movie, rating, timestamp = line.split(',')
             if random.random() < pivot:
                 self.trainSet.setdefault(user, {})
                 self.trainSet[user][movie] = rating
@@ -84,6 +84,7 @@ class UserBasedCF():
         for u, related_users in self.user_sim_matrix.items():
             for v, count in related_users.items():
                 self.user_sim_matrix[u][v] = count / math.sqrt(len(self.trainSet[u]) * len(self.trainSet[v]))
+                print("[test] %s %s : %f" %(u, v, self.user_sim_matrix[u][v]))
         print('Calculate user similarity matrix success!')
 
     # 针对目标用户U，找到其最相似的K个用户，产生N个推荐
