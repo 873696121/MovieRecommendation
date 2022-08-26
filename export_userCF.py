@@ -155,7 +155,8 @@ class UserBasedCF():
         return [res_item_dict, res_user_dict, res_extra]
 
     def run(self):
-        rating_file = '/Users/huhong/PycharmProjects/MovieRecommendation/ml-latest-small/ratings.csv'
+        # rating_file = '/Users/huhong/PycharmProjects/MovieRecommendation/ml-latest-small/ratings.csv'
+        rating_file = 'U:\\project\\profile_matrix.csv'
         userCF = UserBasedCF()
         userCF.get_dataset(rating_file)
         userCF.calc_user_sim()
