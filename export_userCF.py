@@ -18,8 +18,11 @@ class UserBasedCF():
         self.trainSet = {}
         self.testSet = {}
 
+        self.profileSet = {}
+
         # 用户相似度矩阵
-        self.user_sim_matrix = {}
+        self.user_sim_applet_matrix = {}
+        self.user_sim_profile_matrix = {}
         self.movie_count = 0
 
         print('Similar user number = %d' % self.n_sim_user)
@@ -74,16 +77,16 @@ class UserBasedCF():
                 for v in users:
                     if u == v:
                         continue
-                    self.user_sim_matrix.setdefault(u, {})
-                    self.user_sim_matrix[u].setdefault(v, 0)
-                    self.user_sim_matrix[u][v] += 1
+                    self.user_sim_applet_matrix.setdefault(u, {})
+                    self.user_sim_applet_matrix[u].setdefault(v, 0)
+                    self.user_sim_applet_matrix[u][v] += 1
         print('Build user co-rated movies matrix success!')
 
         # 计算相似性
         print('Calculating user similarity matrix ...')
-        for u, related_users in self.user_sim_matrix.items():
+        for u, related_users in self.user_sim_applet_matrix.items():
             for v, count in related_users.items():
-                self.user_sim_matrix[u][v] = count / math.sqrt(len(self.trainSet[u]) * len(self.trainSet[v]))
+                self.user_sim_applet_matrix[u][v] = count / math.sqrt(len(self.trainSet[u]) * len(self.trainSet[v]))
                 # print("[test] %s %s : %f" %(u, v, self.user_sim_matrix[u][v]))
         print('Calculate user similarity matrix success!')
 
@@ -95,7 +98,7 @@ class UserBasedCF():
         watched_movies = self.trainSet[user]
 
         # v=similar user, wuv=similar factor
-        for v, wuv in sorted(self.user_sim_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]:
+        for v, wuv in sorted(self.user_sim_applet_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]:
             for movie in self.trainSet[v]:
                 if movie in watched_movies:
                     continue
@@ -106,7 +109,7 @@ class UserBasedCF():
     # 针对目标用户U，找到其最相似的K个用户
     def recommendUser(self, user):
         K = self.n_sim_user
-        return sorted(self.user_sim_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]
+        return sorted(self.user_sim_applet_matrix[user].items(), key=itemgetter(1), reverse=True)[0:K]
 
     # 产生推荐并通过准确率、召回率和覆盖率进行评估
     def evaluate(self):
